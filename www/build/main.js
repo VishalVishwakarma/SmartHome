@@ -42,6 +42,8 @@ webpackEmptyAsyncContext.id = 226;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(87);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__home_home__ = __webpack_require__(271);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_woocommerce_api__ = __webpack_require__(272);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_woocommerce_api___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_woocommerce_api__);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -54,18 +56,49 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+
 var Menu = /** @class */ (function () {
     function Menu(navCtrl, navParams) {
+        var _this = this;
         this.navCtrl = navCtrl;
         this.navParams = navParams;
         this.homePage = __WEBPACK_IMPORTED_MODULE_2__home_home__["a" /* HomePage */];
+        this.categories = [];
+        this.WooCommerce = __WEBPACK_IMPORTED_MODULE_3_woocommerce_api__({
+            url: "http://smarthome.vishaltalks.com",
+            consumerKey: "ck_e2375f55ae5a234ee7c756b7f424b211f59e7d31",
+            consumerSecret: "cs_2a35ef3f5990263fe30189f3c83a912b41c3096b"
+        });
+        this.WooCommerce.getAsync("products/categories").then(function (data) {
+            console.log(JSON.parse(data.body).product_categories);
+            var temp = JSON.parse(data.body).product_categories;
+            for (var i = 0; i < temp.length; i++) {
+                if (temp[i].parent == 0) {
+                    if (temp[i].slug == "accessories") {
+                        temp[i].icon = "hammer";
+                    }
+                    if (temp[i].slug == "hoodies") {
+                        temp[i].icon = "american-football";
+                    }
+                    if (temp[i].slug == "tshirts") {
+                        temp[i].icon = "shirt";
+                    }
+                    if (temp[i].slug == "general") {
+                        temp[i].icon = "flower";
+                    }
+                    _this.categories.push(temp[i]);
+                }
+            }
+        }, function (err) {
+            console.log(err);
+        });
     }
     Menu.prototype.ionViewDidLoad = function () {
         console.log('ionViewDidLoad MenuPage');
     };
     Menu = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
-            selector: 'page-menu',template:/*ion-inline-start:"F:\Code Decode\GitHub\SmartHome\src\pages\menu\menu.html"*/'<ion-menu [content]="content">\n  <ion-header>\n    <ion-toolbar>\n      <ion-title>Menu</ion-title>\n    </ion-toolbar>\n  </ion-header>\n\n  <ion-content>\n    <ion-list>\n      <button menuClose ion-item>\n        Home\n      </button>\n    </ion-list>\n  </ion-content>\n\n</ion-menu>\n\n<ion-nav #content [root]="homePage"></ion-nav>'/*ion-inline-end:"F:\Code Decode\GitHub\SmartHome\src\pages\menu\menu.html"*/,
+            selector: 'page-menu',template:/*ion-inline-start:"F:\Code Decode\GitHub\SmartHome\src\pages\menu\menu.html"*/'<ion-menu [content]="content">\n  <ion-header>\n    <ion-toolbar>\n      <ion-title>Menu</ion-title>\n    </ion-toolbar>\n  </ion-header>\n\n  <ion-content class="card-background-page">\n\n    <ion-card no-margin>\n      <img src="http://smarthome.vishaltalks.com/wp-content/uploads/2018/04/Hardware-Store.jpg"/>\n      <div class="card-title">SMART HOME</div>\n      <div class="card-subtitle">YOUR HOME HARDWARE</div>\n    </ion-card>\n\n    <ion-list>\n      <ion-item *ngFor="let category of categories" text-wrap>\n        <ion-icon [name]="category.icon" item-left large></ion-icon>\n        <h2>{{ category.name }}</h2>\n        <p>{{ category.description }}</p>\n      </ion-item>\n    </ion-list>\n  </ion-content>\n\n</ion-menu>\n\n<ion-nav #content [root]="homePage"></ion-nav>'/*ion-inline-end:"F:\Code Decode\GitHub\SmartHome\src\pages\menu\menu.html"*/,
         }),
         __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["e" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavParams */]])
     ], Menu);
@@ -83,7 +116,7 @@ var Menu = /** @class */ (function () {
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return HomePage; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(87);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_woocommerce_api__ = __webpack_require__(406);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_woocommerce_api__ = __webpack_require__(272);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_woocommerce_api___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_woocommerce_api__);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -166,13 +199,13 @@ var HomePage = /** @class */ (function () {
 
 /***/ }),
 
-/***/ 331:
+/***/ 332:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser_dynamic__ = __webpack_require__(332);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__app_module__ = __webpack_require__(354);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser_dynamic__ = __webpack_require__(333);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__app_module__ = __webpack_require__(355);
 
 
 Object(__WEBPACK_IMPORTED_MODULE_0__angular_platform_browser_dynamic__["a" /* platformBrowserDynamic */])().bootstrapModule(__WEBPACK_IMPORTED_MODULE_1__app_module__["a" /* AppModule */]);
@@ -180,7 +213,7 @@ Object(__WEBPACK_IMPORTED_MODULE_0__angular_platform_browser_dynamic__["a" /* pl
 
 /***/ }),
 
-/***/ 354:
+/***/ 355:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -188,7 +221,7 @@ Object(__WEBPACK_IMPORTED_MODULE_0__angular_platform_browser_dynamic__["a" /* pl
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__ = __webpack_require__(58);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_ionic_angular__ = __webpack_require__(87);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__app_component__ = __webpack_require__(397);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__app_component__ = __webpack_require__(398);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__pages_home_home__ = __webpack_require__(271);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__pages_menu_menu__ = __webpack_require__(270);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__ionic_native_status_bar__ = __webpack_require__(266);
@@ -243,7 +276,7 @@ var AppModule = /** @class */ (function () {
 
 /***/ }),
 
-/***/ 397:
+/***/ 398:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -335,5 +368,5 @@ var MyApp = /** @class */ (function () {
 
 /***/ })
 
-},[331]);
+},[332]);
 //# sourceMappingURL=main.js.map
