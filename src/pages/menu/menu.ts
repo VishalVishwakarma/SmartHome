@@ -63,7 +63,7 @@ export class Menu {
 
   openCategoryPage(category){
 
-    this.childNavCtrl.setRoot(ProductsByCategoryPage, {"category": category});
+    this.childNavCtrl.push(ProductsByCategoryPage, {"category": category});
 
   }
 
