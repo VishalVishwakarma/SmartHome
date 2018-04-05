@@ -24,7 +24,7 @@
         </ion-chip>
       </ion-card-title>
       <p [innerHTML]="product.description"></p>
-      <button ion-button icon-left block outline color="danger" style="margin-top: 10px;">
+      <button ion-button icon-left block outline color="danger" style="margin-top: 10px;" (click)="addToCart(product)">
         <ion-icon name="basket"></ion-icon> Add to Cart
       </button>
     </ion-card-content>
