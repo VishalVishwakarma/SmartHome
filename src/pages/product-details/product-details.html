@@ -9,6 +9,10 @@
 
 <ion-content>
 
+  <ion-fab right top edge (click)="openCart()">
+    <button ion-fab color="danger"><ion-icon name="cart"></ion-icon> </button>
+  </ion-fab>
+
   <ion-card no-padding>
     <ion-slides autoplay="3000" pager>
       <ion-slide *ngFor="let image of product.images">
