@@ -13,6 +13,7 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 
 import { IonicStorageModule } from '@ionic/storage';
+import { SignupPage } from '../pages/signup/signup';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { IonicStorageModule } from '@ionic/storage';
     Menu,
     ProductsByCategoryPage,
     ProductDetailsPage,
-    CartPage
+    CartPage,
+    SignupPage
   ],
   imports: [
     BrowserModule,
@@ -35,7 +37,8 @@ import { IonicStorageModule } from '@ionic/storage';
     Menu,
     ProductsByCategoryPage,
     ProductDetailsPage,
-    CartPage
+    CartPage,
+    SignupPage
   ],
   providers: [
     StatusBar,
