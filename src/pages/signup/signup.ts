@@ -33,7 +33,10 @@ export class SignupPage {
 
   setBillingToShipping(){
     this.billing_shipping_same = !this.billing_shipping_same;
-  }
+    if(this.billing_shipping_same){
+      this.newUser.shipping_address = this.newUser.billing_address;
+    }
+  }  
 
   checkEmail(){
 
@@ -111,10 +114,6 @@ export class SignupPage {
         "postcode": this.newUser.shipping_address.postcode,
         "country": this.newUser.shipping_address.country
       }
-    }
-
-    if(this.billing_shipping_same){
-      this.newUser.shipping_address = this.newUser.shipping_address;
     }
 
     this.WooCommerce.postAsync('customers', customerData).then( (data) => {
