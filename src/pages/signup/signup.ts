@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams, ToastController, AlertController} from 'ionic-angular';
-import * as WC from 'woocommerce-api';
+import { WoocommerceProvider } from '../../providers/woocommerce/woocommerce';
 
 @Component({
   selector: 'page-signup',
@@ -13,17 +13,13 @@ export class SignupPage {
   billing_shipping_same: boolean;
 
   constructor(public navCtrl: NavController, public navParams: NavParams, 
-    public toastCtrl: ToastController, public alertCtrl: AlertController) {
+    public toastCtrl: ToastController, public alertCtrl: AlertController, private WP: WoocommerceProvider) {
 
     this.newUser.billing_address = {};
     this.newUser.shipping_address = {};
     this.billing_shipping_same = false;
 
-    this.WooCommerce = WC({
-      url: "http://smarthome.vishaltalks.com",
-      consumerKey: "ck_e2375f55ae5a234ee7c756b7f424b211f59e7d31",
-      consumerSecret: "cs_2a35ef3f5990263fe30189f3c83a912b41c3096b"
-    });
+    this.WooCommerce = WP.init();
 
   }
 

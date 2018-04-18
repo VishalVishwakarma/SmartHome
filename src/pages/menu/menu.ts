@@ -7,6 +7,8 @@ import * as WC from 'woocommerce-api';
 import { ProductsByCategoryPage } from '../products-by-category/products-by-category'
 import { Storage } from '@ionic/storage';
 import { CartPage } from '../cart/cart';
+import { WoocommerceProvider } from '../../providers/woocommerce/woocommerce';
+import { ContactPage } from '../contact/contact';
 
 @Component({
   selector: 'page-menu',
@@ -21,16 +23,13 @@ export class Menu {
   loggedIn: boolean;
   user: any;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public storage: Storage, public modalCtrl: ModalController) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, public storage: Storage, 
+    public modalCtrl: ModalController, private WP: WoocommerceProvider) {
     this.homePage = HomePage
     this.categories = [];
     this.user = {};
 
-    this.WooCommerce = WC({
-      url: "http://smarthome.vishaltalks.com",
-      consumerKey: "ck_e2375f55ae5a234ee7c756b7f424b211f59e7d31",
-      consumerSecret: "cs_2a35ef3f5990263fe30189f3c83a912b41c3096b"
-    });
+    this.WooCommerce = WP.init();
 
     this.WooCommerce.getAsync("products/categories").then((data) => {
       console.log(JSON.parse(data.body).product_categories);
@@ -40,18 +39,7 @@ export class Menu {
       for(let i = 0; i<temp.length; i++){
         if(temp[i].parent == 0){
 
-          if(temp[i].slug == "accessories"){
-            temp[i].icon = "hammer";
-          }
-          if(temp[i].slug == "hoodies"){
-            temp[i].icon = "american-football";
-          }
-          if(temp[i].slug == "tshirts"){
-            temp[i].icon = "shirt";
-          }
-          if(temp[i].slug == "general"){
-            temp[i].icon = "flower";
-          }
+          temp[i].icon = "flower";
 
           this.categories.push(temp[i]);
         }
@@ -104,6 +92,9 @@ export class Menu {
     if (pageName == 'cart') {
       let modal = this.modalCtrl.create(CartPage);
       modal.present();
+    }
+    if (pageName == 'contact') {
+      let modal = this.navCtrl.push(ContactPage);
     }
 
   }

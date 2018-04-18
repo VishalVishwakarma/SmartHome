@@ -1,7 +1,9 @@
 import { Component, ViewChild } from '@angular/core';
-import { NavController, Slides, ToastController } from 'ionic-angular';
-import * as WC from 'woocommerce-api';
+import { NavController, Slides, ToastController, ModalController} from 'ionic-angular';
 import { ProductDetailsPage } from '../product-details/product-details';
+import { SearchPage } from '../search/search';
+import { WoocommerceProvider } from '../../providers/woocommerce/woocommerce';
+import { CartPage } from '../cart/cart';
 
 @Component({
   selector: 'page-home',
@@ -13,23 +15,20 @@ export class HomePage {
   products: any[];
   page: number;
   moreProducts: any[];
+  searchQuery: string = "";
 
   @ViewChild('productSlides') productSlides : Slides;
 
-  constructor(public navCtrl: NavController, public toastCtrl: ToastController) {
+  constructor(public navCtrl: NavController, public toastCtrl: ToastController, public modalCtrl: ModalController, private WP: WoocommerceProvider) {
 
-    this.page = 2;
+    this.page = 1;
 
-    this.WooCommerce = WC({
-      url: "http://smarthome.vishaltalks.com",
-      consumerKey: "ck_e2375f55ae5a234ee7c756b7f424b211f59e7d31",
-      consumerSecret: "cs_2a35ef3f5990263fe30189f3c83a912b41c3096b"
-    });
+    this.WooCommerce = WP.init();
 
     this.loadMoreProducts(null);
 
     this.WooCommerce.getAsync("products").then((data) => {
-      
+      console.log(JSON.parse(data.body).products);
       this.products = JSON.parse(data.body).products;
     }, (err) => {
       console.log(err)
@@ -38,7 +37,7 @@ export class HomePage {
   }
 
   ionViewDidLoad(){
-    setInterval(() => {
+    /*setInterval(() => {
 
       if(this.productSlides.getActiveIndex() == this.productSlides.length() -1)
         this.productSlides.slideTo(0);
@@ -46,14 +45,14 @@ export class HomePage {
       this.productSlides.slideNext();
 
       //console.log(this.productSlides.getActiveIndex());
-    }, 3000)
+    }, 3000)*/
   }
 
   loadMoreProducts(event){
 
     if(event == null)
     {  
-      this.page = 2;
+      this.page = 1;
       this.moreProducts = [];
     }
     else 
@@ -87,4 +86,13 @@ export class HomePage {
     this.navCtrl.push(ProductDetailsPage, {"product": product});
   }
 
+  onSearch(event){
+    if(this.searchQuery.length > 0){
+      this.navCtrl.push(SearchPage, {"searchQuery": this.searchQuery});
+    }
+  }
+
+  openCart(){
+    this.modalCtrl.create(CartPage).present();
+  }
 }

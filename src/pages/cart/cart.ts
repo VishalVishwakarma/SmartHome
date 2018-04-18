@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, ViewController } from 'ionic-angular';
+import { NavController, NavParams, ViewController, ToastController} from 'ionic-angular';
 import { Storage } from '@ionic/storage';
 import { CheckoutPage } from '../checkout/checkout';
 import { LoginPage } from '../login/login';
@@ -15,7 +15,7 @@ export class CartPage {
   showEmptyCartMessage: boolean = false;
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public storage: Storage, 
-    public viewCtrl: ViewController) {
+    public viewCtrl: ViewController, public toastCtrl: ToastController) {
 
     this.total = 0.0;
   
@@ -26,7 +26,13 @@ export class CartPage {
 
         if(this.cartItems.length > 0){
           this.cartItems.forEach((item, index) => {
-            this.total = this.total + (item.product.price * item.qty)
+
+            if(item.variation){
+              this.total = this.total + (parseFloat(item.variation.price)* item.qty);
+            } else{
+              this.total = this.total + (item.product.price * item.qty)
+            }
+            
           })
         } else {
           this.showEmptyCartMessage = true;
@@ -42,7 +48,14 @@ export class CartPage {
 
   removeFromCart(item, i){
 
-    let price = item.product.price;
+    let price;
+    
+    if(item.variation){
+      price = item.variation.price;
+    } else {
+      price = item.product.price;
+    }
+    
     let qty = item.qty;
 
     this.cartItems.splice(i,1);
@@ -69,4 +82,46 @@ export class CartPage {
       }
     });
   }
+
+  changeQty(item, i, change){
+    
+    let price;
+
+    if (!item.variation){
+      price = item.product.price;
+    } else {
+      price = parseFloat(item.variation.price);
+    }
+
+    let qty = item.qty;
+
+    if(change < 0 && item.qty == 1){
+      return;
+    }
+
+    qty = qty + change;
+    item.qty = qty;
+    item.amount = qty * price;
+    item.price = price;
+
+    this.cartItems[i] = item;
+
+    this.storage.set("cart", this.cartItems).then(()=>{
+
+      if(change > 0){
+        this.total = this.total + item.price;
+      } else {
+        this.total = this.total - item.price;
+      }
+
+      this.toastCtrl.create({
+        message: "Cart Updated.",
+        duration: 2000,
+        showCloseButton: true
+      }).present();
+    })
+
+
+  }
+
 }

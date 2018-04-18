@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams, AlertController} from 'ionic-angular';
 import { Storage } from '@ionic/storage';
-import * as WC from 'woocommerce-api';
 import { HomePage } from '../home/home';
+import { WoocommerceProvider } from '../../providers/woocommerce/woocommerce';
 
 @Component({
   selector: 'page-checkout',
@@ -18,11 +18,11 @@ export class CheckoutPage {
   userInfo: any;
 
   constructor(public navCtrl: NavController, public navParams: NavParams, 
-    public storage: Storage, public alertCtrl: AlertController) {
+    public storage: Storage, public alertCtrl: AlertController, private WP: WoocommerceProvider) {
   
     this.newOrder = {};
-    this.newOrder.billing_address = {};
-    this.newOrder.shipping_address = {};
+    this.newOrder.billing = {};
+    this.newOrder.shipping = {};
     this.billing_shipping_same = false;
     
 
@@ -33,67 +33,71 @@ export class CheckoutPage {
       {method_id: "paypal", method_title: "Paypal"}
     ];
 
-    this.WooCommerce = WC({
-      url: "http://smarthome.vishaltalks.com",
-      consumerKey: "ck_e2375f55ae5a234ee7c756b7f424b211f59e7d31",
-      consumerSecret: "cs_2a35ef3f5990263fe30189f3c83a912b41c3096b"
-    });
+    this.WooCommerce = WP.init(true);
 
     this.storage.get("userLoginInfo").then((userLoginInfo)=>{
       this.userInfo = userLoginInfo.user;
 
       let email = userLoginInfo.user.email;
+      let id = userLoginInfo.user.id;
 
-      this.WooCommerce.getAsync("customers/email/"+email).then((data)=>{
-        this.newOrder = JSON.parse(data.body).customer;
+      this.WooCommerce.getAsync("customers/"+id).then((data) => {
+      
+        this.newOrder = JSON.parse(data.body);
+
       })
     })
 
   }
 
-  setBillingShippingSame(){
-    this.billing_shipping_same =  !this.billing_shipping_same;
+  setBillingShippingSame() {
+    this.billing_shipping_same = !this.billing_shipping_same;
 
-    if(this.billing_shipping_same){
-      this.newOrder.shipping_address = this.newOrder.billing_address;
+    if (this.billing_shipping_same) {
+      this.newOrder.shipping = this.newOrder.billing;
     }
+
   }
 
-  placeOrder(){
-    
+  placeOrder() {
+
     let orderItems: any[] = [];
     let data: any = {};
 
     let paymentData: any = {};
 
-    this.paymentMethods.forEach((element, index)=>{
-      if(element.method_id == this.paymentMethod){
+    this.paymentMethods.forEach((element, index) => {
+      if (element.method_id == this.paymentMethod) {
         paymentData = element;
       }
     });
 
-    data = {
-      payment_details : {
-        method_id: paymentData.method_id,
-        method_title: paymentData.method_title,
-        paid: true,
-      },
 
-      billing_address: this.newOrder.billing_address,
-      shipping_address: this.newOrder.shipping_address,
+    data = {
+      payment_method: paymentData.method_id,
+      payment_method_title: paymentData.method_title,
+      billing: this.newOrder.billing,
+      shipping: this.newOrder.shipping,
       customer_id: this.userInfo.id || '',
-      line_items: orderItems
+      line_items: orderItems,
+      status: "processing"
     };
 
-    if(paymentData.method_id == "paypal"){
-      //TODO
+
+    if (paymentData.method_id == "paypal") {
+
     } else {
-      this.storage.get("cart").then((cart)=>{
-        cart.forEach((element, index) =>{
-          orderItems.push({
-            product_id: element.product.id,
-            quantity: element.qty
-          });
+
+      this.storage.get("cart").then((cart) => {
+
+        cart.forEach((element, index) => {
+          if(element.variation){
+            orderItems.push({ product_id: element.product.id, variation_id: element.variation.id, quantity: element.qty });
+            ///total = total + (element.variation.price * element.qty);
+          } else {
+            orderItems.push({ product_id: element.product.id, quantity: element.qty });
+            ///total = total + (element.product.price * element.qty);
+          }
         });
 
         data.line_items = orderItems;
@@ -102,14 +106,13 @@ export class CheckoutPage {
 
         orderData.order = data;
 
-        this.WooCommerce.postAsync("orders", orderData).then((data)=>{
-          console.log(JSON.parse(data.body));
-          let response = (JSON.parse(data.body).order);
+        this.WooCommerce.postAsync("orders", orderData.order).then((data) => {
+
+          let response = (JSON.parse(data.body));
 
           this.alertCtrl.create({
-            title: "Order Placed",
-            message: "Your order has been placed successfully. Your order number is " 
-                      + response.order_number,
+            title: "Order Placed Successfully",
+            message: "Your order has been placed successfully. Your order number is " + response.number,
             buttons: [{
               text: "OK",
               handler: () => {
@@ -117,11 +120,18 @@ export class CheckoutPage {
               }
             }]
           }).present();
-        });
+
+          data = [];
+          this.storage.set("cart", data);
+
+        })
 
       })
+
     }
 
   }
 
+
+  
 }

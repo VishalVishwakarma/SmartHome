@@ -25678,6 +25678,10 @@ ion-navbar.toolbar {
   min-height: calc(46px + env(safe-area-inset-bottom));
 }
 
+page-cart .compact .item-inner .input-wrapper ion-label {
+  margin: 0 !important;
+}
+
 page-home ion-card {
   margin: 0 !important;
   width: 100% !important;

@@ -36,7 +36,7 @@
       <ion-item *ngIf="loggedIn" menuClose>
         <ion-icon name="contact" item-left large></ion-icon>
         <h2>{{ (this.user.firstname == '' ? this.user.username : this.user.firstname) || "" }}</h2>
-        <p>Welcome</p>
+        <p>{{ this.user.email }}</p>
       </ion-item>
 
       <ion-item *ngIf="loggedIn" (click)="openPage('cart')" menuClose>
@@ -49,6 +49,12 @@
         <ion-icon name="log-out" item-left large></ion-icon>
         <h2>Logout</h2>
         <p>of your Account</p>
+      </ion-item>
+
+      <ion-item (click)="openPage('contact')" menuClose>
+        <ion-icon name="mail" item-left large></ion-icon>
+        <h2>Contact</h2>
+        <p>For queries now</p>
       </ion-item>
 
     </ion-list>

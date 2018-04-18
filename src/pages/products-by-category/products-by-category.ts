@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
-import * as WC from 'woocommerce-api';
 import { ProductDetailsPage } from '../product-details/product-details';
+import { WoocommerceProvider } from '../../providers/woocommerce/woocommerce';
 
 @Component({
   selector: 'page-products-by-category',
@@ -14,16 +14,12 @@ export class ProductsByCategoryPage {
   page: number;
   category: any;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private WP: WoocommerceProvider) {
 
     this.page = 1;
     this.category = this.navParams.get("category");
 
-    this.WooCommerce = WC({
-      url: "http://smarthome.vishaltalks.com",
-      consumerKey: "ck_e2375f55ae5a234ee7c756b7f424b211f59e7d31",
-      consumerSecret: "cs_2a35ef3f5990263fe30189f3c83a912b41c3096b"
-    });
+    this.WooCommerce = WP.init();
 
     this.WooCommerce.getAsync("products?filter[category]="+this.category.slug).then((data) => {
       this.products = JSON.parse(data.body).products;

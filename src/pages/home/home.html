@@ -1,10 +1,20 @@
 <ion-header>
-  <ion-navbar>
+  <ion-navbar color="danger">
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
+
     <ion-title>Home</ion-title>
+    
+    <ion-buttons right>
+      <button ion-button clear (click)="openCart()" style="padding-right: 15px;">
+        <ion-icon name="cart"></ion-icon>
+      </button>
+    </ion-buttons>
   </ion-navbar>
+  <ion-toolbar color="danger">
+    <ion-searchbar [(ngModel)]="searchQuery" (search)="onSearch($event)"></ion-searchbar>
+  </ion-toolbar>
 </ion-header>
 
 <ion-content no-padding>
@@ -17,20 +27,6 @@
   </ion-card>
 
   <img style="margin-top: 10px;" src="http://smarthome.vishaltalks.com/wp-content/uploads/2018/04/banner.jpg" />
-
-  <ion-grid>
-    <ion-row>
-      <ion-slides #productSlides>
-        <ion-slide *ngFor="let product of products" (click)="openProductPage(product)">
-          <ion-card no-padding>
-            <img [src]="product.featured_src" />
-            <h1 padding center>{{ product.title }}</h1>
-            <p padding center [innerHTML]="product.short_description.substr(0,50) + '...'"></p>
-          </ion-card>
-        </ion-slide>
-      </ion-slides>
-    </ion-row>
-  </ion-grid>
 
   <ion-list>
     <ion-item *ngFor="let product of moreProducts" text-wrap (click)="openProductPage(product)">

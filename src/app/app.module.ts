@@ -11,12 +11,15 @@ import { CartPage } from '../pages/cart/cart';
 import { SignupPage } from '../pages/signup/signup';
 import { LoginPage } from '../pages/login/login';
 import { CheckoutPage } from '../pages/checkout/checkout';
+import { SearchPage } from'../pages/search/search';
+import { ContactPage } from '../pages/contact/contact';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 
 import { IonicStorageModule } from '@ionic/storage';
 import { HttpModule } from '@angular/http';
+import { WoocommerceProvider } from '../providers/woocommerce/woocommerce';
 
 @NgModule({
   declarations: [
@@ -28,7 +31,9 @@ import { HttpModule } from '@angular/http';
     CartPage,
     SignupPage,
     LoginPage,
-    CheckoutPage
+    CheckoutPage,
+    SearchPage,
+    ContactPage
   ],
   imports: [
     BrowserModule,
@@ -46,12 +51,15 @@ import { HttpModule } from '@angular/http';
     CartPage,
     SignupPage,
     LoginPage,
-    CheckoutPage
+    CheckoutPage,
+    SearchPage,
+    ContactPage
   ],
   providers: [
     StatusBar,
     SplashScreen,
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
+    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    WoocommerceProvider
   ]
 })
 export class AppModule {}
